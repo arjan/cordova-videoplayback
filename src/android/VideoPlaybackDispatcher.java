@@ -133,7 +133,7 @@ public class VideoPlaybackDispatcher {
                     HttpURLConnection connection = client.open(new URL(this.url));
                     inputStream = connection.getInputStream();
 
-                    byte[] buff = new byte[1024 * 4];
+                    byte[] buff = new byte[1024 * 128];
                     long downloaded = 0;
                     long target = connection.getContentLength();
 
