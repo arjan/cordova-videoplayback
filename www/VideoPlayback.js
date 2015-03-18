@@ -6,5 +6,4 @@ var VideoPlayback = {
     }
 };
 
-
 module.exports = VideoPlayback;

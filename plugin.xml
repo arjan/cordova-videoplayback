@@ -10,7 +10,7 @@
 
 	<name>VideoPlayback</name>
 	<description>Play video from URLs, cache it locally first.</description>
-    <author>Arjan Scherepnisse</author>
+    <author>Arjan Scherpenisse</author>
     <keywords>video,android</keywords>
 	<license>MIT</license>
     
@@ -20,7 +20,7 @@
     
     <platform name="android">
 		<config-file target="res/xml/config.xml" parent="/*">
-            <feature name="VideoPlayer" >
+            <feature name="VideoPlayback" >
                 <param name="android-package" value="nl.miraclethings.videoplayback.VideoPlayback"/>
             </feature>
         </config-file>
@@ -28,7 +28,20 @@
 		<config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.INTERNET" />
         </config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity
+                android:name="nl.miraclethings.videoplayback.VideoPlaybackActivity"
+                android:screenOrientation="landscape" android:label="@string/app_name" />
+		</config-file>
+
+        <!-- the plugin -->
         <source-file src="src/android/VideoPlayback.java" target-dir="src/nl/miraclethings/videoplayback" />
+        <!-- the activity -->
+        <source-file src="src/android/VideoPlaybackActivity.java" target-dir="src/nl/miraclethings/videoplayback" />
+        <!-- the downloader -->
+        <source-file src="src/android/VideoPlaybackDispatcher.java" target-dir="src/nl/miraclethings/videoplayback" />
+
 	</platform>
     
 </plugin>

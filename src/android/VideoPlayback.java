@@ -4,7 +4,7 @@
  *
  */
 
-package com.dawsonloudon.videoplayer;
+package nl.miraclethings.videoplayback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,12 +51,11 @@ public class VideoPlayback extends CordovaPlugin {
     }
 
     private void playVideo(String url) throws IOException {
-        // Display video player
 
         System.out.println("*** Playing url: " + url);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(url), "video/*");
-        this.cordova.getActivity().startActivity(intent);
+        // Display video player
+        VideoPlaybackDispatcher player = new VideoPlaybackDispatcher(cordova.getActivity());
+        player.playVideo(url);
     }
 }
