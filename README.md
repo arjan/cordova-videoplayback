@@ -1,9 +1,12 @@
 Native video playback cordova plugin
 ====================================
 
-This plugin plays videos which are hosted on external URL in your
-app. It does so by first (one-time) downloading the video to the
-device before starting the playback.
+This plugin plays video files which are hosted on external URLs in
+your app. It does so by first (one-time) downloading the video to the
+device before starting the playback. The playback itself is done in
+the app itself, in a fullscreen window with media controls (play,
+pause).
+
 
 Installation
 ------------
