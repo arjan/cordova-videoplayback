@@ -5,6 +5,12 @@ This plugin plays videos which are hosted on external URL in your
 app. It does so by first (one-time) downloading the video to the
 device before starting the playback.
 
+Installation
+------------
+
+    cordova plugin add https://github.com/arjan/cordova-videoplayback
+
+
 Usage
 -----
 
