@@ -6,56 +6,54 @@
 
 package nl.miraclethings.videoplayback;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.PluginResult;
-
 public class VideoPlayback extends CordovaPlugin {
-    private static final String YOU_TUBE = "youtube.com";
-    private static final String ASSETS = "file:///android_asset/";
+
+    private VideoPlaybackDispatcher dispatcher;
 
     @Override
-    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {
-        PluginResult.Status status = PluginResult.Status.OK;
-        String result = "";
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
 
+        dispatcher = new VideoPlaybackDispatcher(cordova.getActivity());
+    }
+
+    @Override
+    public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) {
         try {
             if (action.equals("playVideo")) {
-                playVideo(args.getString(0));
+                dispatcher.playVideo(args.getString(0));
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, ""));
             }
+
+            else if (action.equals("ensureDownloaded")) {
+                dispatcher.ensureDownloaded(args.getString(0), new VideoPlaybackDispatcher.VideoDownloadCallback() {
+                    @Override
+                    public void onDownloadResult(String url, Exception error) {
+                        if (error == null) {
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, ""));
+                        } else {
+                            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, ""));
+                        }
+                    }
+                });
+            }
+
             else {
-                status = PluginResult.Status.INVALID_ACTION;
+                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION, ""));
             }
-            callbackContext.sendPluginResult(new PluginResult(status, result));
+
         } catch (JSONException e) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.JSON_EXCEPTION));
-        } catch (IOException e) {
-            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.IO_EXCEPTION));
         }
         return true;
     }
 
-    private void playVideo(String url) throws IOException {
-
-        System.out.println("*** Playing url: " + url);
-
-        // Display video player
-        VideoPlaybackDispatcher player = new VideoPlaybackDispatcher(cordova.getActivity());
-        player.playVideo(url);
-    }
 }

@@ -19,6 +19,10 @@ Usage
 
     window.VideoPlayback.play("http://example.com/videos/test.mp4");
 
+To just make sure that the video file is downloaded, call `ensureDownloaded`:
+
+    window.VideoPlayback.ensureDownloaded("http://example.com/videos/test.mp4", successCallback, errorCallback);
+
 
 Requirements / limitations
 --------------------------

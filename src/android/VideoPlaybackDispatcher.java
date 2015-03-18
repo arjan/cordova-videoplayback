@@ -1,7 +1,9 @@
 package nl.miraclethings.videoplayback;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,10 +28,26 @@ public class VideoPlaybackDispatcher {
         this.activity = mainActivity;
     }
 
-    public void playVideo(String url) {
+    interface VideoDownloadCallback {
+        void onDownloadResult(String url, Exception error);
+    }
+
+    public void playVideo(final String url) {
+        ensureDownloaded(url, new VideoDownloadCallback() {
+            @Override
+            public void onDownloadResult(String url, Exception error) {
+                if (error == null) {
+                    openVideoPlayer(url);
+                }
+            }
+        });
+    }
+
+    public void ensureDownloaded(final String url, final VideoDownloadCallback callback) {
+
         final File cacheFile = getCacheFile(url);
         if (cacheFile.exists()) {
-            openVideoPlayer(cacheFile);
+            callback.onDownloadResult(url, null);
         } else {
 
             new VideoDownloadTask(url, cacheFile){
@@ -58,18 +76,28 @@ public class VideoPlaybackDispatcher {
                 @Override
                 protected void onPostExecute(Exception e) {
                     progressDialog.dismiss();
-                    if (e == null) {
-                        openVideoPlayer(cacheFile);
-                    } else {
+                    callback.onDownloadResult(url, e);
+
+                    if (e != null) {
                         e.printStackTrace();
-                        Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        new AlertDialog.Builder(activity)
+                                .setTitle("Download failed")
+                                .setMessage("An error occurred while downloading the video. Please make sure that you are connected to the internet.")
+                                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .show();
                     }
                 }
             }.execute();
         }
     }
 
-    private void openVideoPlayer(File f) {
+    private void openVideoPlayer(String url) {
+        File f = getCacheFile(url);
         System.out.println("GO! " + f.getAbsolutePath());
 
         Intent intent = new Intent(activity, VideoPlaybackActivity.class);
