@@ -7,41 +7,60 @@
     <engines>
         <engine name="cordova" version=">=3.5.0" />
     </engines>
-
-	<name>VideoPlayback</name>
-	<description>Play video from URLs, cache it locally first.</description>
+    
+    <name>VideoPlayback</name>
+    <description>Play video from URLs, cache it locally first.</description>
     <author>Arjan Scherpenisse</author>
     <keywords>video,android</keywords>
-	<license>MIT</license>
+    <license>MIT</license>
     
     <js-module src="www/VideoPlayback.js" name="VideoPlayback">
-		<clobbers target="VideoPlayback" />
-	</js-module>
-    
+	<clobbers target="VideoPlayback" />
+    </js-module>
+
+    <!-- android -->
     <platform name="android">
-		<config-file target="res/xml/config.xml" parent="/*">
+	<config-file target="res/xml/config.xml" parent="/*">
             <feature name="VideoPlayback" >
                 <param name="android-package" value="nl.miraclethings.videoplayback.VideoPlayback"/>
             </feature>
         </config-file>
-		
-		<config-file target="AndroidManifest.xml" parent="/*">
+	
+	<config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.INTERNET" />
         </config-file>
 
-		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+	<config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity
                 android:name="nl.miraclethings.videoplayback.VideoPlaybackActivity"
                 android:screenOrientation="landscape" android:label="@string/app_name" />
-		</config-file>
-
+	</config-file>
+        
         <!-- the plugin -->
         <source-file src="src/android/VideoPlayback.java" target-dir="src/nl/miraclethings/videoplayback" />
         <!-- the activity -->
         <source-file src="src/android/VideoPlaybackActivity.java" target-dir="src/nl/miraclethings/videoplayback" />
         <!-- the downloader -->
         <source-file src="src/android/VideoPlaybackDispatcher.java" target-dir="src/nl/miraclethings/videoplayback" />
+        
+    </platform>
 
-	</platform>
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="VideoPlayback">
+                <param name="ios-package" value="VideoPlayback"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/ios/VideoPlayback.m" />
+        <source-file src="src/ios/MovieViewController.m" />
+        
+        <header-file src="src/ios/VideoPlayback.h" />
+        <header-file src="src/ios/MovieViewController.h" />
+    
+        <framework src="MediaPlayer.framework" />
+    </platform>
+    
     
 </plugin>
