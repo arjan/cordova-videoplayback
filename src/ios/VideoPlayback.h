@@ -13,7 +13,7 @@
 
 @interface VideoPlayback : CDVPlugin {
   MovieViewController *player;
-  NSString *movie;
+  UIActivityIndicatorView *indicator;
 }
 
 - (void) playVideo:(CDVInvokedUrlCommand*)command;
