@@ -25,6 +25,8 @@
                 <param name="android-package" value="nl.miraclethings.videoplayback.VideoPlayback"/>
             </feature>
         </config-file>
+
+	<framework src="com.squareup.okhttp:okhttp:1.2.1" />
 	
 	<config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.INTERNET" />
