@@ -7,13 +7,13 @@
     <engines>
         <engine name="cordova" version=">=3.5.0" />
     </engines>
-    
+
     <name>VideoPlayback</name>
     <description>Play video from URLs, cache it locally first.</description>
     <author>Arjan Scherpenisse</author>
     <keywords>video,android</keywords>
     <license>MIT</license>
-    
+
     <js-module src="www/VideoPlayback.js" name="VideoPlayback">
 	<clobbers target="VideoPlayback" />
     </js-module>
@@ -27,7 +27,7 @@
         </config-file>
 
 	<framework src="com.squareup.okhttp:okhttp:1.2.1" />
-	
+
 	<config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.INTERNET" />
         </config-file>
@@ -37,14 +37,14 @@
                 android:name="nl.miraclethings.videoplayback.VideoPlaybackActivity"
                 android:screenOrientation="landscape" android:label="@string/app_name" />
 	</config-file>
-        
+
         <!-- the plugin -->
-        <source-file src="src/android/VideoPlayback.java" target-dir="src/nl/miraclethings/videoplayback" />
+        <source-file src="src/android/nl/miraclethings/videoplayback/VideoPlayback.java" target-dir="src/nl/miraclethings/videoplayback" />
         <!-- the activity -->
-        <source-file src="src/android/VideoPlaybackActivity.java" target-dir="src/nl/miraclethings/videoplayback" />
+        <source-file src="src/android/nl/miraclethings/videoplayback/VideoPlaybackActivity.java" target-dir="src/nl/miraclethings/videoplayback" />
         <!-- the downloader -->
-        <source-file src="src/android/VideoPlaybackDispatcher.java" target-dir="src/nl/miraclethings/videoplayback" />
-        
+        <source-file src="src/android/nl/miraclethings/videoplayback/VideoPlaybackDispatcher.java" target-dir="src/nl/miraclethings/videoplayback" />
+
     </platform>
 
     <!-- ios -->
@@ -57,12 +57,12 @@
 
         <source-file src="src/ios/VideoPlayback.m" />
         <source-file src="src/ios/MovieViewController.m" />
-        
+
         <header-file src="src/ios/VideoPlayback.h" />
         <header-file src="src/ios/MovieViewController.h" />
-    
+
         <framework src="MediaPlayer.framework" />
     </platform>
-    
-    
+
+
 </plugin>

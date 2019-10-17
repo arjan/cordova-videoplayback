@@ -34,13 +34,13 @@ public class VideoPlaybackDispatcher {
 
     public void playVideo(final String url) {
         ensureDownloaded(url, new VideoDownloadCallback() {
-            @Override
-            public void onDownloadResult(String url, Exception error) {
-                if (error == null) {
-                    openVideoPlayer(url);
+                @Override
+                public void onDownloadResult(String url, Exception error) {
+                    if (error == null) {
+                        openVideoPlayer(url);
+                    }
                 }
-            }
-        });
+            });
     }
 
     public void ensureDownloaded(final String url, final VideoDownloadCallback callback) {
@@ -50,49 +50,56 @@ public class VideoPlaybackDispatcher {
             callback.onDownloadResult(url, null);
         } else {
 
-            new VideoDownloadTask(url, cacheFile){
+            new VideoDownloadTask(url, cacheFile) {
 
-                public ProgressDialog progressDialog;
+                    public ProgressDialog progressDialog;
 
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                    progressDialog = new ProgressDialog(activity);
-                    progressDialog.setTitle("Please wait...");
-                    progressDialog.setMessage("Downloading the video");
-                    progressDialog.setIndeterminate(false);
-                    progressDialog.setCancelable(false);
-                    progressDialog.setProgressNumberFormat(null);
-                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    progressDialog.show();
-                }
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        final VideoDownloadTask task = this;
+                        progressDialog = new ProgressDialog(activity);
+                        progressDialog.setTitle("Please wait...");
+                        progressDialog.setMessage("Downloading the video");
+                        progressDialog.setIndeterminate(false);
+                        progressDialog.setCancelable(true);
+                        progressDialog.setProgressNumberFormat(null);
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    task.cancel(true);
+                                }
+                            });
+                        progressDialog.show();
+                    }
 
-                @Override
-                protected void onProgressUpdate(Long... values) {
-                    progressDialog.setMax(values[1].intValue());
-                    progressDialog.setProgress(values[0].intValue());
-                }
+                    @Override
+                    protected void onProgressUpdate(Long... values) {
+                        progressDialog.setMax(values[1].intValue());
+                        progressDialog.setProgress(values[0].intValue());
+                    }
 
-                @Override
-                protected void onPostExecute(Exception e) {
-                    progressDialog.dismiss();
-                    callback.onDownloadResult(url, e);
+                    @Override
+                    protected void onPostExecute(Exception e) {
+                        progressDialog.dismiss();
+                        callback.onDownloadResult(url, e);
 
-                    if (e != null) {
-                        e.printStackTrace();
-                        new AlertDialog.Builder(activity)
+                        if (e != null) {
+                            e.printStackTrace();
+                            new AlertDialog.Builder(activity)
                                 .setTitle("Download failed")
                                 .setMessage("An error occurred while downloading the video. Please make sure that you are connected to the internet.")
                                 .setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                })
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    })
                                 .show();
+                        }
                     }
-                }
-            }.execute();
+                }.execute();
         }
     }
 
@@ -128,7 +135,7 @@ public class VideoPlaybackDispatcher {
         StringBuilder stringBuffer = new StringBuilder();
         for (byte arrayByte : arrayBytes) {
             stringBuffer.append(Integer.toString((arrayByte & 0xff) + 0x100, 16)
-                    .substring(1));
+                                .substring(1));
         }
         return stringBuffer.toString();
     }
@@ -156,6 +163,7 @@ public class VideoPlaybackDispatcher {
                 OkHttpClient client = new OkHttpClient();
 
                 try {
+                    File tempFile = File.createTempFile("wow", "mp4", activity.getCacheDir());
 
                     // Create request for remote resource.
                     HttpURLConnection connection = client.open(new URL(this.url));
@@ -173,7 +181,7 @@ public class VideoPlaybackDispatcher {
                         }
 
                         if (outputStream == null) {
-                            outputStream = new BufferedOutputStream(new FileOutputStream(this.targetFile));
+                            outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
                         }
 
                         outputStream.write(buff, 0, readed);
@@ -187,6 +195,8 @@ public class VideoPlaybackDispatcher {
                             return new Exception("Download cancelled.");
                         }
                     }
+
+                    tempFile.renameTo(this.targetFile);
                     return null;
                 } catch (Exception ignore) {
                     return ignore;
