@@ -9,10 +9,10 @@
 //
 
 #import <Cordova/CDV.h>
-#import "MovieViewController.h"
+#import <AVKit/AVKit.h>
 
 @interface VideoPlayback : CDVPlugin {
-  MovieViewController *player;
+  AVPlayer *player;
   UIActivityIndicatorView *indicator;
 }
 

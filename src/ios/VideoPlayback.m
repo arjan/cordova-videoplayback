@@ -9,9 +9,7 @@
 //
 
 #import "VideoPlayback.h"
-#import "MediaPlayer/MPMoviePlayerViewController.h"
-#import "MediaPlayer/MPMoviePlayerController.h"
-#import "MovieViewController.h"
+#import <AVKit/AVKit.h>
 #import <Cordova/CDV.h>
 #import <CommonCrypto/CommonDigest.h>
 
@@ -26,11 +24,15 @@
     }
     NSString *cacheFile = [self cacheFile:movie];
     NSURL *fileURL = [NSURL fileURLWithPath:cacheFile];
-    player = [[MovieViewController alloc] initWithContentURL:fileURL andOrientation:YES];
-    [self.viewController presentMoviePlayerViewControllerAnimated:player];
+      
+      AVPlayerViewController *moviePlayer = [[AVPlayerViewController alloc] init];
+      moviePlayer.player = [AVPlayer playerWithURL:fileURL];
+      [self.viewController presentViewController:moviePlayer animated:YES completion:nil];
+      moviePlayer.view.frame = self.viewController.view.frame;
+      
+      [moviePlayer.player play];
   }];
 }
-
 
 - (void) ensureDownloaded:(CDVInvokedUrlCommand*)command
 {
